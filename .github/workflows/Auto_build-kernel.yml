@@ -3,7 +3,7 @@ on:
   watch:
     types: [started]
   schedule:
-    - cron:  '52 3 * * 2'
+    - cron:  '18 4 * * 2'
   workflow_dispatch:
 
 jobs:
