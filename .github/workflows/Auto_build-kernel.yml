@@ -1,4 +1,4 @@
-name: Auto Build Kernel test
+name: Auto Build Kernel
 on:
   watch:
     types: [started]
