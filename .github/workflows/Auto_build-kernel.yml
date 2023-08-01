@@ -2,9 +2,11 @@ name: Auto Build Kernel test
 on:
   watch:
     types: [started]
-  schedule:
-    - cron:  '52 3 * * 2'
+    
   workflow_dispatch:
+
+  schedule:
+    - cron:  '0 23,0 * * 0'
 
 jobs:
   build:
