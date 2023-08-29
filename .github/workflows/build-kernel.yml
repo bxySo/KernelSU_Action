@@ -1,4 +1,4 @@
-name: Build Kernel
+name: Build BAALAM
 on:
   watch:
     types: [started]
