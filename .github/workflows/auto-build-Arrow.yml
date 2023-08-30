@@ -230,7 +230,7 @@ jobs:
 
     - name: Check a kernel output files
       run: |
-       cd $GITHUB_WORKSPACE/kernel_workspace
+       cd $GITHUB_WORKSPACE/kernel_workspace && ls -l android-kernel/out/arch/${{ env.ARCH }}/boot/
        if [ -f android-kernel/out/arch/${{ env.ARCH }}/boot/${{ env.KERNEL_IMAGE_NAME }} ]; then
            echo "CHECK_FILE_IS_OK=true" >> $GITHUB_ENV
        else
