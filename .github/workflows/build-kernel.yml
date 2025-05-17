@@ -3,206 +3,235 @@ on:
   workflow_dispatch:
     inputs:
       KERNEL_SOURCE:
-        description: 'KERNEL_SOURCE'
+        description: 'URL of the kernel source repository'
         default: 'https://github.com/xiaoleGun/android_kernel_xiaomi_wayne-4.19'
         required: true
         type: string
 
       KERNEL_SOURCE_BRANCH:
-        description: 'KERNEL_SOURCE_BRANCH'
+        description: 'Branch name of the kernel source'
         required: true
         type: string
 
       KERNEL_CONFIG:
-        description: 'KERNEL_CONFIG'
+        description: 'Kernel configuration file name'
         required: true
         type: string
 
       KERNEL_IMAGE_NAME:
-        description: 'KERNEL_IMAGE_NAME'
+        description: 'Name of the kernel image file'
         required: true
-        type: string
+        default: 'Image'
+        type: choice
+        options:
+          - Image
+          - Image.gz
+          - Image.gz-dtb
 
       ARCH:
-        description: 'ARCH'
+        description: 'Target architecture for the kernel build'
         required: true
+        default: 'arm64'
         type: string
 
       ADD_LOCALVERSION_TO_FILENAME:
-        description: 'ADD_LOCALVERSION_TO_FILENAME'
-        required: false
+        description: 'Append localversion to kernel filename'
+        required: true
+        default: false
         type: boolean
 
       EXTRA_CMDS:
-        description: 'EXTRA_CMDS'
-        required: false
+        description: 'Extra commands for the build environment'
+        required: true
         default: 'LD=ld.lld'
         type: string
 
       USE_CUSTOM_CLANG:
-        description: 'USE_CUSTOM_CLANG'
+        description: 'Use custom Clang toolchain'
         required: true
+        default: false
         type: boolean
 
       CUSTOM_CLANG_SOURCE:
-        description: 'CUSTOM_CLANG_SOURCE'
+        description: 'URL of custom Clang source repository'
         required: false
         type: string
 
       CUSTOM_CLANG_BRANCH:
-        description: 'CUSTOM_CLANG_BRANCH'
+        description: 'Branch name for custom Clang source'
         required: false
         type: string
 
       CUSTOM_CMDS:
-        description: 'CUSTOM_CMDS'
-        required: false
+        description: 'Custom commands to run during build'
+        required: true
+        default: 'CLANG_TRIPLE=aarch64-linux-gnu-'
         type: string
 
       CLANG_BRANCH:
-        description: 'CLANG_BRANCH'
+        description: 'Branch name of the Clang toolchain'
         required: true
+        default: 'master-kernel-build-2022'
         type: string
 
       CLANG_VERSION:
-        description: 'CLANG_VERSION'
+        description: 'Version of Clang to use'
         required: true
+        default: 'r450784e'
         type: string
 
       ENABLE_GCC_ARM64:
-        description: 'ENABLE_GCC_ARM64'
+        description: 'Enable GCC for ARM64 architecture'
         required: true
+        default: true
         type: boolean
 
       ENABLE_GCC_ARM32:
-        description: 'ENABLE_GCC_ARM32'
+        description: 'Enable GCC for ARM32 architecture'
         required: true
+        default: true
         type: boolean
 
       USE_CUSTOM_GCC_64:
-        description: 'USE_CUSTOM_GCC_64'
+        description: 'Use custom GCC for 64-bit builds'
         required: true
+        default: false
         type: boolean
 
       CUSTOM_GCC_64_SOURCE:
-        description: 'CUSTOM_GCC_64_SOURCE'
+        description: 'URL of custom GCC 64-bit source repository'
         required: false
         type: string
 
       CUSTOM_GCC_64_BRANCH:
-        description: 'CUSTOM_GCC_64_BRANCH'
+        description: 'Branch name for custom GCC 64-bit source'
         required: false
         type: string
 
       CUSTOM_GCC_64_BIN:
-        description: 'CUSTOM_GCC_64_BIN'
+        description: 'Binary path for custom GCC 64-bit'
         required: false
+        default: 'aarch64-linux-android-'
         type: string
 
       USE_CUSTOM_GCC_32:
-        description: 'USE_CUSTOM_GCC_32'
+        description: 'Use custom GCC for 32-bit builds'
         required: true
+        default: false
         type: boolean
 
       CUSTOM_GCC_32_SOURCE:
-        description: 'CUSTOM_GCC_32_SOURCE'
+        description: 'URL of custom GCC 32-bit source repository'
         required: false
         type: string
 
       CUSTOM_GCC_32_BRANCH:
-        description: 'CUSTOM_GCC_32_BRANCH'
+        description: 'Branch name for custom GCC 32-bit source'
         required: false
         type: string
 
       CUSTOM_GCC_32_BIN:
-        description: 'CUSTOM_GCC_32_BIN'
+        description: 'Binary path for custom GCC 32-bit'
         required: false
+        default: 'arm-linux-androideabi-'
         type: string
 
       ENABLE_KERNELSU:
-        description: 'ENABLE_KERNELSU'
+        description: 'Enable KernelSU integration'
         required: true
+        default: false
         type: boolean
 
       KERNELSU_TAG:
-        description: 'KERNELSU_TAG'
+        description: 'Tag or version of KernelSU to use'
         required: true
-        type: string
-
-      ADD_KPROBES_CONFIG:
-        description: 'ADD_KPROBES_CONFIG'
-        required: true
-        type: boolean
-
-      DISABLE-LTO:
-        description: 'DISABLE-LTO'
-        required: true
-        type: boolean
-
-      ADD_OVERLAYFS_CONFIG:
-        description: 'ADD_OVERLAYFS_CONFIG'
-        required: true
-        type: boolean
-
-      DISABLE_CC_WERROR:
-        description: 'DISABLE_CC_WERROR'
-        required: true
-        type: boolean
-
-      APPLY_KSU_PATCH:
-        description: 'APPLY_KSU_PATCH'
-        required: true
-        type: boolean
-
-      USE_CUSTOM_ANYKERNEL3:
-        description: 'USE_CUSTOM_ANYKERNEL3'
-        required: true
-        type: boolean
-
-      CUSTOM_ANYKERNEL3_SOURCE:
-        description: 'CUSTOM_ANYKERNEL3_SOURCE'
-        required: false
-        type: string
-
-      CUSTOM_ANYKERNEL3_BRANCH:
-        description: 'CUSTOM_ANYKERNEL3_BRANCH'
-        required: false
-        type: string
-
-      ENABLE_CCACHE:
-        description: 'ENABLE_CCACHE'
-        required: true
-        type: boolean
-
-      NEED_DTBO:
-        description: 'NEED_DTBO'
-        required: true
-        type: boolean
-
-      BUILD_BOOT_IMG:
-        description: 'BUILD_BOOT_IMG'
-        required: true
-        type: boolean
-
-      SOURCE_BOOT_IMAGE:
-        description: 'SOURCE_BOOT_IMAGE'
-        required: true
+        default: 'v0.9.5'
         type: string
 
       KSU_EXPECTED_SIZE:
-        description: 'KSU_EXPECTED_SIZE'
+        description: 'Expected size of KernelSU binary'
         required: true
         type: string
 
       KSU_EXPECTED_HASH:
-        description: 'KSU_EXPECTED_HASH'
+        description: 'Expected hash of KernelSU binary'
         required: true
         type: string
 
-      REMOVE_UNUSED_PACKAGES:
-        description: 'REMOVE_UNUSED_PACKAGES'
+      DISABLE-LTO:
+        description: 'Disable Link Time Optimization'
         required: true
+        default: false
         type: boolean
+
+      DISABLE_CC_WERROR:
+        description: 'Disable compiler warnings as errors'
+        required: true
+        default: false
+        type: boolean
+
+      ADD_KPROBES_CONFIG:
+        description: 'Add kprobes configuration to kernel'
+        required: true
+        default: false
+        type: boolean
+
+      ADD_OVERLAYFS_CONFIG:
+        description: 'Add OverlayFS configuration to kernel'
+        required: true
+        default: false
+        type: boolean
+
+      APPLY_KSU_PATCH:
+        description: 'Apply KernelSU patches'
+        required: true
+        default: false
+        type: boolean
+
+      REMOVE_UNUSED_PACKAGES:
+        description: 'Remove unused packages from build environment'
+        required: true
+        default: true
+        type: boolean
+
+      USE_CUSTOM_ANYKERNEL3:
+        description: 'Use custom AnyKernel3 repository'
+        required: true
+        default: false
+        type: boolean
+
+      CUSTOM_ANYKERNEL3_SOURCE:
+        description: 'URL of custom AnyKernel3 repository'
+        required: false
+        type: string
+
+      CUSTOM_ANYKERNEL3_BRANCH:
+        description: 'Branch name for custom AnyKernel3'
+        required: false
+        type: string
+
+      ENABLE_CCACHE:
+        description: 'Enable ccache for faster builds'
+        required: true
+        default: true
+        type: boolean
+
+      NEED_DTBO:
+        description: 'Build Device Tree Blob Overlay'
+        required: true
+        default: false
+        type: boolean
+
+      BUILD_BOOT_IMG:
+        description: 'Build boot image after kernel compilation'
+        required: true
+        default: false
+        type: boolean
+
+      SOURCE_BOOT_IMAGE:
+        description: 'Source boot image for repacking'
+        required: true
+        type: string
 
 jobs:
   build:
@@ -216,7 +245,9 @@ jobs:
     - uses: actions/checkout@v4
     - name: Prepare Configuration
       run: |
-        echo test
+        echo $GITHUB_INPUTS
+        echo $GITHUB_INPUTS >> $GITHUB_ENV
+        exit 1
 
     - name: Remove unused packages
       if: env.REMOVE_UNUSED_PACKAGES == 'true'
