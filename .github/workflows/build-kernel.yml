@@ -1,6 +1,208 @@
 name: Build Kernel
 on:
   workflow_dispatch:
+    inputs:
+      KERNEL_SOURCE:
+        description: 'KERNEL_SOURCE'
+        default: 'https://github.com/xiaoleGun/android_kernel_xiaomi_wayne-4.19'
+        required: true
+        type: string
+
+      KERNEL_SOURCE_BRANCH:
+        description: 'KERNEL_SOURCE_BRANCH'
+        required: true
+        type: string
+
+      KERNEL_CONFIG:
+        description: 'KERNEL_CONFIG'
+        required: true
+        type: string
+
+      KERNEL_IMAGE_NAME:
+        description: 'KERNEL_IMAGE_NAME'
+        required: true
+        type: string
+
+      ARCH:
+        description: 'ARCH'
+        required: true
+        type: string
+
+      ADD_LOCALVERSION_TO_FILENAME:
+        description: 'ADD_LOCALVERSION_TO_FILENAME'
+        required: false
+        type: boolean
+
+      EXTRA_CMDS:
+        description: 'EXTRA_CMDS'
+        required: false
+        default: 'LD=ld.lld'
+        type: string
+
+      USE_CUSTOM_CLANG:
+        description: 'USE_CUSTOM_CLANG'
+        required: true
+        type: boolean
+
+      CUSTOM_CLANG_SOURCE:
+        description: 'CUSTOM_CLANG_SOURCE'
+        required: false
+        type: string
+
+      CUSTOM_CLANG_BRANCH:
+        description: 'CUSTOM_CLANG_BRANCH'
+        required: false
+        type: string
+
+      CUSTOM_CMDS:
+        description: 'CUSTOM_CMDS'
+        required: false
+        type: string
+
+      CLANG_BRANCH:
+        description: 'CLANG_BRANCH'
+        required: true
+        type: string
+
+      CLANG_VERSION:
+        description: 'CLANG_VERSION'
+        required: true
+        type: string
+
+      ENABLE_GCC_ARM64:
+        description: 'ENABLE_GCC_ARM64'
+        required: true
+        type: boolean
+
+      ENABLE_GCC_ARM32:
+        description: 'ENABLE_GCC_ARM32'
+        required: true
+        type: boolean
+
+      USE_CUSTOM_GCC_64:
+        description: 'USE_CUSTOM_GCC_64'
+        required: true
+        type: boolean
+
+      CUSTOM_GCC_64_SOURCE:
+        description: 'CUSTOM_GCC_64_SOURCE'
+        required: false
+        type: string
+
+      CUSTOM_GCC_64_BRANCH:
+        description: 'CUSTOM_GCC_64_BRANCH'
+        required: false
+        type: string
+
+      CUSTOM_GCC_64_BIN:
+        description: 'CUSTOM_GCC_64_BIN'
+        required: false
+        type: string
+
+      USE_CUSTOM_GCC_32:
+        description: 'USE_CUSTOM_GCC_32'
+        required: true
+        type: boolean
+
+      CUSTOM_GCC_32_SOURCE:
+        description: 'CUSTOM_GCC_32_SOURCE'
+        required: false
+        type: string
+
+      CUSTOM_GCC_32_BRANCH:
+        description: 'CUSTOM_GCC_32_BRANCH'
+        required: false
+        type: string
+
+      CUSTOM_GCC_32_BIN:
+        description: 'CUSTOM_GCC_32_BIN'
+        required: false
+        type: string
+
+      ENABLE_KERNELSU:
+        description: 'ENABLE_KERNELSU'
+        required: true
+        type: boolean
+
+      KERNELSU_TAG:
+        description: 'KERNELSU_TAG'
+        required: true
+        type: string
+
+      ADD_KPROBES_CONFIG:
+        description: 'ADD_KPROBES_CONFIG'
+        required: true
+        type: boolean
+
+      DISABLE-LTO:
+        description: 'DISABLE-LTO'
+        required: true
+        type: boolean
+
+      ADD_OVERLAYFS_CONFIG:
+        description: 'ADD_OVERLAYFS_CONFIG'
+        required: true
+        type: boolean
+
+      DISABLE_CC_WERROR:
+        description: 'DISABLE_CC_WERROR'
+        required: true
+        type: boolean
+
+      APPLY_KSU_PATCH:
+        description: 'APPLY_KSU_PATCH'
+        required: true
+        type: boolean
+
+      USE_CUSTOM_ANYKERNEL3:
+        description: 'USE_CUSTOM_ANYKERNEL3'
+        required: true
+        type: boolean
+
+      CUSTOM_ANYKERNEL3_SOURCE:
+        description: 'CUSTOM_ANYKERNEL3_SOURCE'
+        required: false
+        type: string
+
+      CUSTOM_ANYKERNEL3_BRANCH:
+        description: 'CUSTOM_ANYKERNEL3_BRANCH'
+        required: false
+        type: string
+
+      ENABLE_CCACHE:
+        description: 'ENABLE_CCACHE'
+        required: true
+        type: boolean
+
+      NEED_DTBO:
+        description: 'NEED_DTBO'
+        required: true
+        type: boolean
+
+      BUILD_BOOT_IMG:
+        description: 'BUILD_BOOT_IMG'
+        required: true
+        type: boolean
+
+      SOURCE_BOOT_IMAGE:
+        description: 'SOURCE_BOOT_IMAGE'
+        required: true
+        type: string
+
+      KSU_EXPECTED_SIZE:
+        description: 'KSU_EXPECTED_SIZE'
+        required: true
+        type: string
+
+      KSU_EXPECTED_HASH:
+        description: 'KSU_EXPECTED_HASH'
+        required: true
+        type: string
+
+      REMOVE_UNUSED_PACKAGES:
+        description: 'REMOVE_UNUSED_PACKAGES'
+        required: true
+        type: boolean
 
 jobs:
   build:
@@ -14,57 +216,7 @@ jobs:
     - uses: actions/checkout@v4
     - name: Prepare Configuration
       run: |
-        CONFIG_ENV=$(grep -w "CONFIG_ENV" config.env | head -n 1 | cut -d "=" -f 2)
-        CONFIG_LIST=(
-            KERNEL_SOURCE
-            KERNEL_SOURCE_BRANCH
-            KERNEL_CONFIG
-            KERNEL_IMAGE_NAME
-            ARCH
-            ADD_LOCALVERSION_TO_FILENAME
-            EXTRA_CMDS
-            USE_CUSTOM_CLANG
-            CUSTOM_CLANG_SOURCE
-            CUSTOM_CLANG_BRANCH
-            CUSTOM_CMDS
-            CLANG_BRANCH
-            CLANG_VERSION
-            ENABLE_GCC_ARM64
-            ENABLE_GCC_ARM32
-            USE_CUSTOM_GCC_64
-            CUSTOM_GCC_64_SOURCE
-            CUSTOM_GCC_64_BRANCH
-            CUSTOM_GCC_64_BIN
-            USE_CUSTOM_GCC_32
-            CUSTOM_GCC_32_SOURCE
-            CUSTOM_GCC_32_BRANCH
-            CUSTOM_GCC_32_BIN
-            ENABLE_KERNELSU
-            KERNELSU_TAG
-            ADD_KPROBES_CONFIG
-            DISABLE-LTO
-            ADD_OVERLAYFS_CONFIG
-            DISABLE_CC_WERROR
-            APPLY_KSU_PATCH
-            USE_CUSTOM_ANYKERNEL3
-            CUSTOM_ANYKERNEL3_SOURCE
-            CUSTOM_ANYKERNEL3_BRANCH
-            ENABLE_CCACHE
-            NEED_DTBO
-            BUILD_BOOT_IMG
-            SOURCE_BOOT_IMAGE
-            KSU_EXPECTED_SIZE
-            KSU_EXPECTED_HASH
-            REMOVE_UNUSED_PACKAGES
-        )
-
-        for CONFIG in "${CONFIG_LIST[@]}"; do
-            if [[ "$CONFIG" == "EXTRA_CMDS" || "$CONFIG" == "CUSTOM_CMDS" ]]; then
-                echo "$CONFIG=$(grep -w "$CONFIG" "$CONFIG_ENV" | head -n 1 | cut -d ":" -f 2)" >> $GITHUB_ENV
-            else
-                echo "$CONFIG=$(grep -w "$CONFIG" "$CONFIG_ENV" | head -n 1 | cut -d "=" -f 2)" >> $GITHUB_ENV
-            fi
-        done
+        echo test
 
     - name: Remove unused packages
       if: env.REMOVE_UNUSED_PACKAGES == 'true'
